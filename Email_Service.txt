@@ -1,0 +1,37 @@
+import json
+import urllib3
+import json
+
+def lambda_handler(event,context):
+    try:
+        print('****************************')
+        print(event)
+        print('*************************')
+        detail = event[detail]
+        job_name = detail['jobName']
+        upload_url = "https://services.spironet.com/notification-service/api/v1/email"
+        http = urllib3.PoolManager()
+        
+        #define the boundry variable (need to check which id)
+        boundry = 'sjfwefiehfiohiejdjfoldejfolef'
+        
+        body_json = {
+            "to" : "naveena.medam@spironet.com,"bjkb",
+            "cc" : "shfj@bsj","ksugf@hdfj"
+            "subject" : job_name+"Glue Job Failed in prod"
+            "body" : "Hi, All \n\n prod job failed please check and investigate \n\n" + json.dumps(detail),
+            "priority": 1
+        }
+        myHeader = {
+            'Content_type': 'multipart/form-data; boundry = {}'.format(boundry)
+        }
+        payload = '--{}\r\nContent-Disposition: form-data; name=metadata;\r\nContent-Type: application/json\\r\n\r\n{}\r\n--{}--\r\n'.format(
+            boundry,json.dumps(body_json),boundry)
+        out = http.request('POST',upload_url,header = myHeader, body = payload)
+        print(out.status)
+    except Exception as e:
+        print('Error:',str(e))
+        return 'error occured. check logs for details.'
+        
+        
+        
